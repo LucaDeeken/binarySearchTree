@@ -10,15 +10,14 @@ class Tree {
   constructor(arr) {
     this.status = false;
     this.root = this.buildTree(arr, 0, arr.length - 1);
+    this.evenCount = 0;
   }
 
   buildTree(arr, start, end) {
     if (this.status === false) {
       let set = [...new Set(arr)];
       arr = [...set];
-      console.log(arr);
       arr = this.mergeSort(arr);
-      console.log(arr);
       this.status = true;
       end = arr.length - 1;
     }
@@ -90,24 +89,19 @@ class Tree {
     let root = this.root;
     const temp = new Node(x);
 
-    // If tree is empty
     if (root === null) {
       return temp;
     }
 
-    // Find the node who is going to have
-    // the new node temp as its child
     let parent = null;
     let curr = root;
     while (curr !== null) {
       parent = curr;
       if (curr.data > x) curr = curr.left;
       else if (curr.data < x) curr = curr.right;
-      else return this.root; // Key already exists
+      else return this.root;
     }
 
-    // If x is smaller, make it left
-    // child, else right child
     if (parent.data > x) parent.left = temp;
     else parent.right = temp;
 
@@ -138,7 +132,7 @@ class Tree {
     let tempParentStatus = false;
 
     if (curr === root) {
-      tempParent.left = root; // Root als "Kind" des temporären Parents setzen
+      tempParent.left = root;
       parent = tempParent;
       tempParentStatus = true;
     }
@@ -213,9 +207,98 @@ class Tree {
       }
     }
   }
+  find(x) {
+    let root = this.root;
+    if (root === null) {
+      return null;
+    }
+
+    let curr = root;
+    while (curr.data != x || curr.left != null || curr.right != null) {
+      if (curr.data > x) {
+        curr = curr.left;
+      } else {
+        curr = curr.right;
+      }
+    }
+
+    if (curr.data === x) {
+      console.log(curr);
+      return curr;
+    } else {
+      console.log("value wasn't found!");
+      return;
+    }
+  }
+  levelOrder(callback) {
+    let root = this.root;
+    this.evenCount = 0;
+    if (root === null) {
+      return null;
+    }
+
+    function queueWork(queue) {
+      if (queue.length === 0) {
+        return;
+      }
+
+      let currentNode = queue.shift();
+      callback(currentNode);
+      if (currentNode.left != null) {
+        let currentNodeLeft = currentNode.left;
+        queue.push(currentNodeLeft);
+      }
+      if (currentNode.right != null) {
+        let currentNodeLeft = currentNode.right;
+        queue.push(currentNodeLeft);
+      }
+
+      return queueWork(queue);
+    }
+
+    queueWork([this.root]);
+    console.log(this.evenCount);
+  }
+
+  levelOrderIter(callback) {
+    let root = this.root;
+    this.evenCount = 0;
+    if (root === null) {
+      return null;
+    }
+    console.log(this.evenCount);
+    function queueWorkIter(queue) {
+      while (queue.length != 0) {
+        let currentNode = queue.shift();
+        callback(currentNode);
+        if (currentNode.left != null) {
+          let currentNodeLeft = currentNode.left;
+          queue.push(currentNodeLeft);
+        }
+        if (currentNode.right != null) {
+          let currentNodeLeft = currentNode.right;
+          queue.push(currentNodeLeft);
+        }
+      }
+      return;
+    }
+
+    queueWorkIter([root]);
+    console.log(this.evenCount);
+  }
+  evenNumber(node) {
+    if (node.data % 2 === 0) {
+      this.evenCount++;
+    }
+  }
+
+  height(node) {}
 }
 
-let exerciseArry = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
+let exerciseArry = [
+  1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 4564, 344, 55, 56, 344356, 54, 22,
+  12, 324,
+];
 
 //let testEasy = [1, 7, 4, 23, 23, 8, 8];
 
@@ -228,3 +311,6 @@ testClass.insert(2);
 testClass.prettyPrint(testClass.root);
 testClass.delete(8);
 testClass.prettyPrint(testClass.root);
+testClass.find(2);
+testClass.levelOrder(testClass.evenNumber.bind(testClass));
+testClass.levelOrderIter(testClass.evenNumber.bind(testClass));
