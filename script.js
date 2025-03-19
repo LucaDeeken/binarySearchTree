@@ -28,9 +28,7 @@ class Tree {
 
     let mid = start + Math.floor((end - start) / 2);
     let root = new Node(arr[mid]);
-
     root.left = this.buildTree(arr, start, mid - 1);
-
     root.right = this.buildTree(arr, mid + 1, end);
 
     return root;
@@ -131,9 +129,7 @@ class Tree {
       }
     }
     let parentLeft = false;
-    let parentRight = false;
     let tempParent = new Node(90);
-    let tempParentStatus = false;
 
     if (curr === root) {
       tempParent.left = root;
@@ -229,7 +225,6 @@ class Tree {
     }
 
     if (curr.data === x) {
-      console.log(curr);
       return curr;
     } else {
       console.log("value wasn't found!");
@@ -239,6 +234,9 @@ class Tree {
 
   //traverses through the tree in breadth-first level order and returns the sum of all even numbers (recursiveFunction)
   levelOrder(callback) {
+    if (typeof callback != "function") {
+      throw new Error("You need to attach a callback-function!");
+    }
     let root = this.root;
     this.evenCount = 0;
     if (root === null) {
@@ -265,17 +263,18 @@ class Tree {
     }
 
     queueWork([this.root]);
-    console.log(this.evenCount);
   }
 
   //traverses through the tree in breadth-first level order and returns the sum of all even numbers (iterativeFunction)
   levelOrderIter(callback) {
+    if (typeof callback != "function") {
+      throw new Error("You need to attach a callback-function!");
+    }
     let root = this.root;
     this.evenCount = 0;
     if (root === null) {
       return null;
     }
-    console.log(this.evenCount);
     function queueWorkIter(queue) {
       while (queue.length != 0) {
         let currentNode = queue.shift();
@@ -295,7 +294,7 @@ class Tree {
     queueWorkIter([root]);
     console.log(this.evenCount);
 
-  //outputs even numbers  
+    //outputs even numbers
   }
   evenNumber(node) {
     if (node.data % 2 === 0) {
@@ -303,7 +302,47 @@ class Tree {
     }
   }
 
-  height(node) {}
+  preOrder(callback) {
+    if (typeof callback != "function") {
+      throw new Error("You need to attach a callback-function!");
+    }
+    let root = this.root;
+    this.evenCount = 0;
+
+    if (root === null) {
+      return null;
+    }
+
+    let array = [];
+     function preOrder(queue) {
+
+      console.log(queue);
+
+      if (queue.length === 0) {
+        return;
+      }
+      console.log(queue);
+      let currentNode = queue;
+     
+      callback(currentNode);
+      if(currentNode.left===null && currentNode.right===null) {
+        return preOrder(queue);
+      }
+      if(currentNode.left!=null) {
+        currentNode= currentNode.left;
+        array.push(currentNode);
+        return preOrder(queue);
+      }
+      if(currentNode.right!=null) {
+        currentNode= currentNode.right;
+        array.push(currentNode);
+        return preOrder(queue);
+      }
+
+     }
+     preOrder(root);
+     console.log(this.evenCount);
+  }
 }
 
 let exerciseArry = [
@@ -325,3 +364,6 @@ testClass.prettyPrint(testClass.root);
 testClass.find(2);
 testClass.levelOrder(testClass.evenNumber.bind(testClass));
 testClass.levelOrderIter(testClass.evenNumber.bind(testClass));
+//testClass.levelOrderIter();
+testClass.preOrder(testClass.evenNumber.bind(testClass));
+
