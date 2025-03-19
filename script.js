@@ -116,12 +116,12 @@ class Tree {
 
   delete(x) {
     let root = this.root;
-
     if (root === null) {
       return null;
     }
     let parent = null;
     let curr = root;
+
     while (curr.data != x) {
       if (curr.right != null || curr.left != null) {
         parent = curr;
@@ -132,19 +132,26 @@ class Tree {
         curr = curr.right;
       }
     }
-    console.log(parent);
     let parentLeft = false;
     let parentRight = false;
+    let tempParent = new Node(90);
+    let tempParentStatus = false;
 
-    if(parent.left!=null) {
+    if (curr === root) {
+      tempParent.left = root; // Root als "Kind" des temporären Parents setzen
+      parent = tempParent;
+      tempParentStatus = true;
+    }
+
+    if (parent.left != null) {
       if (parent.left.data === x) {
         parentLeft = true;
-      } 
+      }
     }
-    if(parent.right!=null) {
+    if (parent.right != null) {
       if (parent.right.data === x) {
         parentRight = true;
-      } 
+      }
     }
 
     if (curr.right === null && curr.left === null) {
@@ -172,21 +179,39 @@ class Tree {
           parent.right = leftChild;
         }
       }
-      
     } else {
+      let toDelete = curr;
+      let toDeleteParent = parent;
+      parent = curr;
       curr = curr.right;
+
       while (curr.left != null) {
         parent = curr;
         curr = curr.left;
       }
-      //childFirstRight = curr.right;
+
+      let herausgewühlt = curr;
+      let parentHerausgewühlt = parent;
+
+      if (herausgewühlt !== toDelete.right) {
+        parentHerausgewühlt.left = herausgewühlt.right;
+      }
+
+      herausgewühlt.left = toDelete.left;
+      if (herausgewühlt !== toDelete.right) {
+        herausgewühlt.right = toDelete.right;
+      }
+
+      if (toDelete === this.root) {
+        this.root = herausgewühlt;
+      } else {
+        if (toDeleteParent.left === toDelete) {
+          toDeleteParent.left = herausgewühlt;
+        } else {
+          toDeleteParent.right = herausgewühlt;
+        }
+      }
     }
-    if (parentLeft) {
-      parent.left = curr;
-    } else {
-      parent.right = curr;
-    }
-    console.log(curr);
   }
 }
 
@@ -201,5 +226,5 @@ testClass.insert(30);
 testClass.prettyPrint(testClass.root);
 testClass.insert(2);
 testClass.prettyPrint(testClass.root);
-testClass.delete(67);
+testClass.delete(8);
 testClass.prettyPrint(testClass.root);
