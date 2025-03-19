@@ -13,6 +13,7 @@ class Tree {
     this.evenCount = 0;
   }
 
+  //takes inputArray and builds tree
   buildTree(arr, start, end) {
     if (this.status === false) {
       let set = [...new Set(arr)];
@@ -35,6 +36,7 @@ class Tree {
     return root;
   }
 
+  //outputs the tree into the console
   prettyPrint = (node, prefix = "", isLeft = true) => {
     if (node === null) {
       return;
@@ -52,6 +54,7 @@ class Tree {
     }
   };
 
+  //sorts the array
   mergeSort(array) {
     if (array.length <= 1) {
       return array;
@@ -66,7 +69,6 @@ class Tree {
 
     return this.merge(sortedLeft, sortedRight);
   }
-
   merge(left, right) {
     let result = [];
     let i = 0,
@@ -85,6 +87,7 @@ class Tree {
     return result.concat(left.slice(i)).concat(right.slice(j));
   }
 
+  //inserts node with inputValue
   insert(x) {
     let root = this.root;
     const temp = new Node(x);
@@ -108,6 +111,7 @@ class Tree {
     return this.root;
   }
 
+  //deletes node with inputValue
   delete(x) {
     let root = this.root;
     if (root === null) {
@@ -207,6 +211,8 @@ class Tree {
       }
     }
   }
+
+  //returns node with inputValue
   find(x) {
     let root = this.root;
     if (root === null) {
@@ -230,6 +236,8 @@ class Tree {
       return;
     }
   }
+
+  //traverses through the tree in breadth-first level order and returns the sum of all even numbers (recursiveFunction)
   levelOrder(callback) {
     let root = this.root;
     this.evenCount = 0;
@@ -260,6 +268,7 @@ class Tree {
     console.log(this.evenCount);
   }
 
+  //traverses through the tree in breadth-first level order and returns the sum of all even numbers (iterativeFunction)
   levelOrderIter(callback) {
     let root = this.root;
     this.evenCount = 0;
@@ -285,6 +294,8 @@ class Tree {
 
     queueWorkIter([root]);
     console.log(this.evenCount);
+
+  //outputs even numbers  
   }
   evenNumber(node) {
     if (node.data % 2 === 0) {
