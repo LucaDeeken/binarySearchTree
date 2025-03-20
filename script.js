@@ -11,6 +11,8 @@ class Tree {
     this.status = false;
     this.root = this.buildTree(arr, 0, arr.length - 1);
     this.evenCount = 0;
+    this.leafsArr = [];
+    this.treeArr = [];
   }
 
   //takes inputArray and builds tree
@@ -215,7 +217,6 @@ class Tree {
       return null;
     }
     let curr = root;
-    console.log(curr);
     while (curr.data != x && (curr.left != null || curr.right != null)) {
       if (curr.data > x) {
         curr = curr.left;
@@ -225,7 +226,6 @@ class Tree {
     }
 
     if (curr.data === x) {
-      console.log(curr);
       return curr;
     } else {
       console.log("value wasn't found!");
@@ -407,26 +407,111 @@ class Tree {
     let value = this.find(x);
 
     function getHeight(value) {
-
-      if(value===null) {
+      if (value === null) {
         return -1;
       }
 
       let goingLeft = getHeight(value.left);
       let goingRight = getHeight(value.right);
 
-      return 1+ Math.max(goingLeft, goingRight);
-
+      return 1 + Math.max(goingLeft, goingRight);
     }
     console.log(getHeight(value));
   }
+
+  getLeafs(node) {
+    if (node.left === null && node.right === null) {
+      this.leafsArr.push(node);
+    }
+    return this.leafsArr;
+  }
+
+  getTreeArray(node) {
+    
+      this.treeArr.push(node.data);
+    
+    return this.treeArr;
+  }
+
+  isBalanced() {
+    let root = this.root;
+    this.treeArr = [];
+
+    const travelTree = (node) => {
+      if (node === null) {
+        return;
+      }
+      travelTree(node.left);
+      travelTree(node.right);
+      this.getLeafs(node);
+    };
+    travelTree(root);
+
+    let balanceArr = [];
+    let arrLength = this.leafsArr.length;
+    for (let i = 0; i < arrLength; i++) {
+      let node = this.leafsArr.shift();
+      let x = node.data;
+      let depthNum = this.depth(x);
+      balanceArr.push(depthNum);
+    }
+    let firstIndex = balanceArr[0];
+    for (let j = 0; j < balanceArr.length; j++) {
+      let heightOfEle = balanceArr[j];
+      let diff = firstIndex - heightOfEle;
+      if (diff > 1 || diff < -1) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  rebalance() {
+
+    this.treeArr = [];
+    const travelTree = (node) => {
+      if (node === null) {
+        return;
+      }
+      travelTree(node.left);
+      travelTree(node.right);
+      this.getTreeArray(node);
+    };
+    travelTree(this.root);
+    console.log(this.treeArr);
+    this.root = this.buildTree(this.treeArr,0, this.treeArr.length-1);
+    return;
+  }
 }
 
-let exerciseArry = [
-  1, 7, 4, 23, 8, 9, 4, 3, 5, 200, 2000, 7, 9, 10, 14, 67, 6345, 4564, 344, 55,
-  56, 344356, 54, 22, 12, 324, 22,
-];
 
+
+
+
+let newArr = [];
+function randomArr() {
+
+  let newArr = [];
+  for(let i=0; i<50; i++) {
+
+    let randomNumber = Math.floor(Math.random()*100);
+    newArr.push(randomNumber);
+
+  }
+  console.log(newArr);
+  return newArr;
+}
+
+randomArr();
+console.log(newArr);
+
+
+
+
+
+
+
+let exerciseArry = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 //let testEasy = [1, 7, 4, 23, 23, 8, 8];
 
 const testClass = new Tree(exerciseArry, 0, exerciseArry.length - 1);
@@ -434,8 +519,14 @@ testClass.prettyPrint(testClass.root);
 //const testEasyClass = new Tree(testEasy, 0, testEasy.length - 1);
 // testClass.insert(30);
 // testClass.prettyPrint(testClass.root);
-// testClass.insert(2);
-// testClass.prettyPrint(testClass.root);
+testClass.insert(2323);
+testClass.insert(2656);
+testClass.insert(2545);
+testClass.insert(24334);
+testClass.insert(22323);
+testClass.insert(2122);
+
+testClass.prettyPrint(testClass.root);
 // testClass.delete(8);
 // testClass.prettyPrint(testClass.root);
 testClass.levelOrder(testClass.evenNumber.bind(testClass));
@@ -446,3 +537,6 @@ testClass.inOrder(testClass.evenNumber.bind(testClass));
 testClass.depth(22);
 testClass.find(3);
 testClass.height(1);
+console.log(testClass.isBalanced());
+console.log(testClass.rebalance());
+testClass.prettyPrint(testClass.root);
