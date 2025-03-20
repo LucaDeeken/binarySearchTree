@@ -214,9 +214,9 @@ class Tree {
     if (root === null) {
       return null;
     }
-
     let curr = root;
-    while (curr.data != x || curr.left != null || curr.right != null) {
+    console.log(curr);
+    while (curr.data != x && (curr.left != null || curr.right != null)) {
       if (curr.data > x) {
         curr = curr.left;
       } else {
@@ -225,6 +225,7 @@ class Tree {
     }
 
     if (curr.data === x) {
+      console.log(curr);
       return curr;
     } else {
       console.log("value wasn't found!");
@@ -313,41 +314,117 @@ class Tree {
       return null;
     }
 
-    let array = [];
-     function preOrder(queue) {
-
-      console.log(queue);
-
+    function preOrder(queue) {
       if (queue.length === 0) {
         return;
       }
-      console.log(queue);
-      let currentNode = queue;
-     
+
+      let currentNode = queue.shift();
       callback(currentNode);
-      if(currentNode.left===null && currentNode.right===null) {
-        return preOrder(queue);
+      if (currentNode.left === null && currentNode.right === null) {
+        return;
       }
-      if(currentNode.left!=null) {
-        currentNode= currentNode.left;
-        array.push(currentNode);
-        return preOrder(queue);
+      if (currentNode.left != null) {
+        let PapaNode = currentNode;
+        currentNode = currentNode.left;
+        queue.push(currentNode);
+        preOrder(queue);
+        currentNode = PapaNode;
       }
-      if(currentNode.right!=null) {
-        currentNode= currentNode.right;
-        array.push(currentNode);
-        return preOrder(queue);
+      if (currentNode.right != null) {
+        currentNode = currentNode.right;
+        queue.push(currentNode);
+        preOrder(queue);
+      }
+      return;
+    }
+    preOrder([root]);
+    console.log(this.evenCount);
+  }
+
+  postOrder(callback) {
+    if (typeof callback !== "function") {
+      throw new Error("You need to attach a callback-function!");
+    }
+    this.evenCount = 0;
+    function travelTree(node) {
+      if (node === null) {
+        return;
+      }
+      travelTree(node.left);
+      travelTree(node.right);
+      callback(node);
+    }
+
+    travelTree(this.root);
+    console.log(this.evenCount);
+  }
+
+  inOrder(callback) {
+    if (typeof callback !== "function") {
+      throw new Error("You need to attach a callback-function!");
+    }
+    this.evenCount = 0;
+    function travelTree(node) {
+      if (node === null) {
+        return;
+      }
+      travelTree(node.left);
+      callback(node);
+      travelTree(node.right);
+    }
+
+    travelTree(this.root);
+    console.log(this.evenCount);
+  }
+
+  depth(x) {
+    let root = this.root;
+    if (root === null) {
+      return null;
+    }
+    let height = 0;
+    let curr = root;
+    while (curr.data != x && (curr.left != null || curr.right != null)) {
+      if (curr.data > x) {
+        curr = curr.left;
+        height++;
+      } else {
+        curr = curr.right;
+        height++;
+      }
+    }
+
+    if (curr.data === x) {
+      return height;
+    } else {
+      console.log("value wasn't found!");
+      return;
+    }
+  }
+
+  height(x) {
+    let value = this.find(x);
+
+    function getHeight(value) {
+
+      if(value===null) {
+        return -1;
       }
 
-     }
-     preOrder(root);
-     console.log(this.evenCount);
+      let goingLeft = getHeight(value.left);
+      let goingRight = getHeight(value.right);
+
+      return 1+ Math.max(goingLeft, goingRight);
+
+    }
+    console.log(getHeight(value));
   }
 }
 
 let exerciseArry = [
-  1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 4564, 344, 55, 56, 344356, 54, 22,
-  12, 324,
+  1, 7, 4, 23, 8, 9, 4, 3, 5, 200, 2000, 7, 9, 10, 14, 67, 6345, 4564, 344, 55,
+  56, 344356, 54, 22, 12, 324, 22,
 ];
 
 //let testEasy = [1, 7, 4, 23, 23, 8, 8];
@@ -355,15 +432,17 @@ let exerciseArry = [
 const testClass = new Tree(exerciseArry, 0, exerciseArry.length - 1);
 testClass.prettyPrint(testClass.root);
 //const testEasyClass = new Tree(testEasy, 0, testEasy.length - 1);
-testClass.insert(30);
-testClass.prettyPrint(testClass.root);
-testClass.insert(2);
-testClass.prettyPrint(testClass.root);
-testClass.delete(8);
-testClass.prettyPrint(testClass.root);
-testClass.find(2);
+// testClass.insert(30);
+// testClass.prettyPrint(testClass.root);
+// testClass.insert(2);
+// testClass.prettyPrint(testClass.root);
+// testClass.delete(8);
+// testClass.prettyPrint(testClass.root);
 testClass.levelOrder(testClass.evenNumber.bind(testClass));
 testClass.levelOrderIter(testClass.evenNumber.bind(testClass));
-//testClass.levelOrderIter();
 testClass.preOrder(testClass.evenNumber.bind(testClass));
-
+testClass.postOrder(testClass.evenNumber.bind(testClass));
+testClass.inOrder(testClass.evenNumber.bind(testClass));
+testClass.depth(22);
+testClass.find(3);
+testClass.height(1);
