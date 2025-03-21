@@ -217,7 +217,11 @@ class Tree {
       return null;
     }
     let curr = root;
-    while (curr.data != x && (curr.left != null || curr.right != null)) {
+    while (
+      curr != null &&
+      (curr.left != null || curr.right != null) &&
+      curr.data != x
+    ) {
       if (curr.data > x) {
         curr = curr.left;
       } else {
@@ -225,7 +229,9 @@ class Tree {
       }
     }
 
-    if (curr.data === x) {
+    if (curr === null) {
+      return;
+    } else if (curr.data === x) {
       return curr;
     } else {
       console.log("value wasn't found!");
@@ -264,6 +270,7 @@ class Tree {
     }
 
     queueWork([this.root]);
+    console.log(this.evenCount);
   }
 
   //traverses through the tree in breadth-first level order and returns the sum of all even numbers (iterativeFunction)
@@ -385,7 +392,11 @@ class Tree {
     }
     let height = 0;
     let curr = root;
-    while (curr.data != x && (curr.left != null || curr.right != null)) {
+    while (
+      curr != null &&
+      (curr.left != null || curr.right != null) &&
+      curr.data != x
+    ) {
       if (curr.data > x) {
         curr = curr.left;
         height++;
@@ -395,7 +406,9 @@ class Tree {
       }
     }
 
-    if (curr.data === x) {
+    if (curr === null) {
+      return;
+    } else if (curr.data === x) {
       return height;
     } else {
       console.log("value wasn't found!");
@@ -405,6 +418,10 @@ class Tree {
 
   height(x) {
     let value = this.find(x);
+    if (typeof value === "undefined") {
+      console.log("value wasn't found!");
+      return;
+    }
 
     function getHeight(value) {
       if (value === null) {
@@ -427,9 +444,8 @@ class Tree {
   }
 
   getTreeArray(node) {
-    
-      this.treeArr.push(node.data);
-    
+    this.treeArr.push(node.data);
+
     return this.treeArr;
   }
 
@@ -467,7 +483,6 @@ class Tree {
   }
 
   rebalance() {
-
     this.treeArr = [];
     const travelTree = (node) => {
       if (node === null) {
@@ -478,65 +493,48 @@ class Tree {
       this.getTreeArray(node);
     };
     travelTree(this.root);
-    console.log(this.treeArr);
-    this.root = this.buildTree(this.treeArr,0, this.treeArr.length-1);
+    this.status=false;
+    this.root = this.buildTree(this.treeArr, 0, this.treeArr.length - 1);
     return;
   }
 }
 
-
-
-
-
 let newArr = [];
 function randomArr() {
-
   let newArr = [];
-  for(let i=0; i<50; i++) {
-
-    let randomNumber = Math.floor(Math.random()*100);
+  for (let i = 0; i < 50; i++) {
+    let randomNumber = Math.floor(Math.random() * 100);
     newArr.push(randomNumber);
-
   }
-  console.log(newArr);
   return newArr;
 }
 
-randomArr();
-console.log(newArr);
+let newArray = randomArr();
 
-
-
-
-
-
-
-let exerciseArry = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-//let testEasy = [1, 7, 4, 23, 23, 8, 8];
-
-const testClass = new Tree(exerciseArry, 0, exerciseArry.length - 1);
-testClass.prettyPrint(testClass.root);
-//const testEasyClass = new Tree(testEasy, 0, testEasy.length - 1);
-// testClass.insert(30);
-// testClass.prettyPrint(testClass.root);
-testClass.insert(2323);
-testClass.insert(2656);
-testClass.insert(2545);
-testClass.insert(24334);
-testClass.insert(22323);
-testClass.insert(2122);
-
-testClass.prettyPrint(testClass.root);
-// testClass.delete(8);
-// testClass.prettyPrint(testClass.root);
+const testClass = new Tree(newArray, 0, newArray.length - 1);
+console.log(testClass.isBalanced());
 testClass.levelOrder(testClass.evenNumber.bind(testClass));
 testClass.levelOrderIter(testClass.evenNumber.bind(testClass));
 testClass.preOrder(testClass.evenNumber.bind(testClass));
 testClass.postOrder(testClass.evenNumber.bind(testClass));
 testClass.inOrder(testClass.evenNumber.bind(testClass));
-testClass.depth(22);
-testClass.find(3);
-testClass.height(1);
-console.log(testClass.isBalanced());
-console.log(testClass.rebalance());
 testClass.prettyPrint(testClass.root);
+testClass.insert(11);
+testClass.insert(10);
+testClass.insert(9);
+testClass.insert(8);
+testClass.insert(7);
+testClass.insert(6);
+testClass.insert(5);
+testClass.insert(4);
+testClass.insert(3);
+testClass.insert(2);
+testClass.insert(1);
+console.log(testClass.isBalanced());
+testClass.prettyPrint(testClass.root);
+testClass.rebalance();
+testClass.prettyPrint(testClass.root);
+console.log(testClass.isBalanced());
+testClass.prettyPrint(testClass.root);
+
+
